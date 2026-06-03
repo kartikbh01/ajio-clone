@@ -1,73 +1,144 @@
-# React + TypeScript + Vite
+# Fashion Store
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern fashion e-commerce application built with React, TypeScript, Tailwind CSS, and React Router. The application uses the ASOS API (via RapidAPI) to provide product discovery, category browsing, search functionality, and detailed product information.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+### Product Discovery
 
-## React Compiler
+* Browse fashion products by category
+* View trending and popular products
+* Explore related recommendations
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Search Experience
 
-## Expanding the ESLint configuration
+* Real-time search suggestions
+* Product search by keyword
+* Fast and responsive search results
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Product Details
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+* Detailed product information
+* Product images
+* Pricing and brand information
+* Available sizes and color variants (if provided by API)
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### Recommendations
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+* You Might Also Like
+* People Also Bought
+
+
+
+## Tech Stack
+
+### Frontend
+
+* React
+* TypeScript
+* Tailwind CSS
+* React Router
+* Axios
+
+### API
+
+* ASOS API (RapidAPI)
+
+---
+
+## API Endpoints Used
+
+Base URL: https://asos10.p.rapidapi.com/api/v1/
+
+| Feature                 | Endpoint                            | URL 
+| ----------------------- | ------------------------------------|---------------------------------------------------
+| Categories              | **GET** getCategories               | /getCategories
+| Product Listing         | **GET** getProductList              | /getProductList?limit=50&offset=0&sort=recommended
+| Search Suggestions      | **GET** getAutoSuggestion           | /autoSuggestion?query=shir
+| Product Search          | **GET** getProductListBySearchTerm  | /getProductListBySearchTerm?searchTerm=query
+| Product Details         | **GET** getProductDetails           | /getProductDetails?productId=201748564
+| Related Products        | **GET** getYouMightAlsoLike         | /getYouMightAlsoLike?productId=201748564
+| Product Recommendations | **GET** getPeopleAlsoBought         | /getPeopleAlsoBought?productId=201748564
+
+---
+
+## Project Structure
+
+```text
+src/
+├── pages/
+│   ├── Home.tsx
+│   ├── ProductListing.tsx
+│   ├── ProductDetails.tsx
+│   └── NotFound.tsx
+├── routes/
+    └── router.ts
+├── api/
+│   └── asos-api.ts
+├── types/
+├── utils/
+└── main.tsx
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Application Routes
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Home Page
+
+```text
+/
+```
+
+Displays:
+
+* Featured categories
+* Trending products
+* Search bar
+
+### Category Page
+
+```text
+/category/:categoryId
+```
+
+Displays:
+
+* Products belonging to a selected category
+* Filtering and sorting options
+
+### Search Results Page
+
+```text
+/search?q=shirt
+```
+
+Displays:
+
+* Products matching the search query
+* Pagination support
+
+### Product Details Page
+
+```text
+/product/:productId
+```
+
+Displays:
+
+* Product information
+* Product gallery
+* Related recommendations
+* People also bought section
+
+---
+
+## Environment Variables
+
+Create a `.env` file in the project root.
+
+```env
+VITE_RAPIDAPI_KEY=your_rapidapi_key
+VITE_RAPIDAPI_HOST=your_rapidapi_host
+VITE_API_BASE_URL=your_api_base_url
 ```
