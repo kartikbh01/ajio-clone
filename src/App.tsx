@@ -8,6 +8,7 @@ import CartPage from "./pages/CartPage"
 import WishlistPage from "./pages/WishlistPage"
 import { Navbar } from "./components/navbar/Navbar"
 import { Footer } from "./components/common/Footer"
+import { ScrollToTop } from "./components/common/ScrollToTop"
 
 
 function Layout({ children }: { children: React.ReactNode }) {
@@ -24,6 +25,7 @@ function App() {
   return (
     <ThemeProvider defaultTheme="light" storageKey="ajio-theme">
       <BrowserRouter>
+        <ScrollToTop />
         <Routes>
           <Route path="/" element={<Layout><HomePage /></Layout>} />
           <Route path="/products" element={<Layout><ProductListingPage /></Layout>} />
@@ -38,3 +40,4 @@ function App() {
 }
 
 export default App
+
