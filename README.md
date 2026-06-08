@@ -1,144 +1,86 @@
-# Fashion Store
+# AJIO Clone
 
-A modern fashion e-commerce application built with React, TypeScript, Tailwind CSS, and React Router. The application uses the ASOS API (via RapidAPI) to provide product discovery, category browsing, search functionality, and detailed product information.
-
-## Features
-
-### Product Discovery
-
-* Browse fashion products by category
-* View trending and popular products
-* Explore related recommendations
-
-### Search Experience
-
-* Real-time search suggestions
-* Product search by keyword
-* Fast and responsive search results
-
-### Product Details
-
-* Detailed product information
-* Product images
-* Pricing and brand information
-* Available sizes and color variants (if provided by API)
-
-### Recommendations
-
-* You Might Also Like
-* People Also Bought
-
-
-
-## Tech Stack
-
-### Frontend
-
-* React
-* TypeScript
-* Tailwind CSS
-* React Router
-* Axios
-
-### API
-
-* ASOS API (RapidAPI)
+A responsive and premium frontend-only e-commerce application imitating the look and feel of AJIO. <br/>
+Built with **React**, **TypeScript**, **Vite**, **Tailwind CSS v4**, and **Zustand** for state management.
 
 ---
 
-## API Endpoints Used
+## 🚀 Key Features
 
-Base URL: https://asos10.p.rapidapi.com/api/v1/
-
-| Feature                 | Endpoint                            | URL 
-| ----------------------- | ------------------------------------|---------------------------------------------------
-| Categories              | **GET** getCategories               | /getCategories
-| Product Listing         | **GET** getProductList              | /getProductList?limit=50&offset=0&sort=recommended
-| Search Suggestions      | **GET** getAutoSuggestion           | /autoSuggestion?query=shir
-| Product Search          | **GET** getProductListBySearchTerm  | /getProductListBySearchTerm?searchTerm=query
-| Product Details         | **GET** getProductDetails           | /getProductDetails?productId=201748564
-| Related Products        | **GET** getYouMightAlsoLike         | /getYouMightAlsoLike?productId=201748564
-| Product Recommendations | **GET** getPeopleAlsoBought         | /getPeopleAlsoBought?productId=201748564
+*   **Product Listings & Filtering**: Category-wise filtering and search functionality.
+*   **Search suggestions**: Dynamically displays search suggestions as the user types.
+*   **Detailed Product Pages**: Displays descriptions, ratings, prices, discount calculation, stock status, and image galleries.
+*   **Persistent Cart & Wishlist**: Powered by a unified Zustand store with local storage persistence.
+*   **Responsive UI**: Optimized for mobile, tablet, and desktop screens with a high-contrast dark/light mode setup.
 
 ---
 
-## Project Structure
+## 🛠️ Tech Stack
 
-```text
+*   **Core**: React, TypeScript
+*   **State Management**: [Zustand](https://github.com/pmndrs/zustand)
+*   **Styling**: [Tailwind CSS v4](https://tailwindcss.com/)
+*   **Routing**: React Router DOM
+*   **Components**: [shadcn/ui](https://ui.shadcn.com/)
+*   **Icons**: Lucide React
+
+---
+
+## 🔌 API & Endpoints
+
+This project consumes the public **[DummyJSON API](https://dummyjson.com/)** for fetching e-commerce resources. The custom API interaction layer is implemented in [dummyjson.ts](file:///c:/Users/karti/OneDrive/Desktop/ajio-clone/src/api/dummyjson.ts).
+
+### Base URL
+```
+https://dummyjson.com
+```
+
+### Endpoints Used
+
+| Endpoint | Method | Helper Function | Description & Usage |
+| :--- | :--- | :--- | :--- |
+| `/products/categories` | `GET` | `fetchCategories()` | Retrieves all categories. Used in [Footer.tsx](file:///c:/Users/karti/OneDrive/Desktop/ajio-clone/src/components/common/Footer.tsx) and header navigation. |
+| `/products` | `GET` | `fetchProducts()` | Retrieves products. Fetches bulk limit of 200 items, filters out non-fashion categories (like `vehicle`, `motorcycle`, `laptops`, `groceries`), and paginates them client-side. |
+| `/products/search` | `GET` | `fetchProducts({ search: query })`<br/>`fetchSearchSuggestions(query)` | Searches for products matching the query string. Used for searching and search suggestions. |
+| `/products/category/{categorySlug}` | `GET` | `fetchCategoryProducts(categorySlug)` | Retrieves products belonging to a specific category. |
+| `/products/{id}` | `GET` | `fetchProductById(id)` | Retrieves full details for a product by its numeric ID. Used in the product details view. |
+
+---
+
+## 📂 Project Structure
+
+The project has a modular layout with a clear separation of concerns between pages, components, state management, and the API helper:
+
+```
 src/
-├── pages/
-│   ├── Home.tsx
-│   ├── ProductListing.tsx
-│   ├── ProductDetails.tsx
-│   └── NotFound.tsx
-├── routes/
-    └── router.ts
-├── api/
-│   └── asos-api.ts
-├── types/
-├── utils/
-└── main.tsx
+├── api/             # API services & DummyJSON client integration
+├── components/      # Reusable UI component libraries
+│   ├── common/      # Shared elements (e.g., Footer)
+│   ├── filters/     # Product filtering components
+│   ├── navbar/      # Navigation and search bar
+│   ├── product/     # Cards, image galleries, and listing components
+│   └── ui/          # Raw Shadcn/UI primitive primitives
+├── hooks/           # Custom React hooks
+├── pages/           # Page-level components corresponding to routing
+├── store/           # Zustand global state (cart, wishlist, search)
+├── types/           # Global TypeScript type definitions
+├── App.tsx          # Router layout & application shell setup
+├── main.tsx         # Application entry point
+└── index.css        # Tailwind CSS variables & themes
 ```
 
 ---
 
-## Application Routes
+## 🚦 Routing Structure
 
-### Home Page
+Client-side routing is handled using `react-router-dom`. All pages are wrapped inside a common `Layout` component that keeps the header navigation (`Navbar`) and footer (`Footer`) persistent.
 
-```text
-/
-```
-
-Displays:
-
-* Featured categories
-* Trending products
-* Search bar
-
-### Category Page
-
-```text
-/category/:categoryId
-```
-
-Displays:
-
-* Products belonging to a selected category
-* Filtering and sorting options
-
-### Search Results Page
-
-```text
-/search?q=shirt
-```
-
-Displays:
-
-* Products matching the search query
-* Pagination support
-
-### Product Details Page
-
-```text
-/product/:productId
-```
-
-Displays:
-
-* Product information
-* Product gallery
-* Related recommendations
-* People also bought section
+| Path | Component | Description |
+| :--- | :--- | :--- |
+| `/` | `HomePage` | Splash page showcasing top slide banners and featured category grid |
+| `/products` | `ProductListingPage` | List of items with search, filters (size, price, ratings), sorting, and grid layout |
+| `/product/:id` | `ProductDetailPage` | Full details, customer ratings, image selection gallery, and add-to-cart/wishlist buttons |
+| `/cart` | `CartPage` | Overview of selected products, quantity selectors, checkout calculations, and coupon inputs |
+| `/wishlist` | `WishlistPage` | Saved fashion items that users want to buy later |
 
 ---
-
-## Environment Variables
-
-Create a `.env` file in the project root.
-
-```env
-VITE_RAPIDAPI_KEY=your_rapidapi_key
-VITE_RAPIDAPI_HOST=your_rapidapi_host
-VITE_API_BASE_URL=your_api_base_url
-```
