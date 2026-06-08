@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react"
 import { useSearchParams, Link } from "react-router-dom"
-import { ChevronRight, LayoutGrid, List, ArrowUpDown } from "lucide-react"
+import { ChevronRight, LayoutGrid, List } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { ProductCard, ProductCardSkeleton } from "@/components/product/ProductCard"
-import { QuickView } from "@/components/product/QuickView"
 import { FilterSidebar, FilterChips, MobileFilterDrawer, DEFAULT_FILTERS, PRICE_MAX, type ActiveFilters } from "@/components/filters/FilterSidebar"
 import { fetchProducts, fetchCategories } from "@/api/dummyjson"
 import type { Product, Category } from "@/types"
@@ -54,7 +53,6 @@ function applyClientFilters(products: Product[], filters: ActiveFilters): Produc
 
 export default function ProductListingPage() {
   const [searchParams, setSearchParams] = useSearchParams()
-  const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
   const [products, setProducts] = useState<Product[]>([])
@@ -196,7 +194,6 @@ export default function ProductListingPage() {
               <div className="flex items-center gap-2 ml-auto">
                 <Select value={sortParam} onValueChange={(v) => updateParams({ sort: v, page: "1" })}>
                   <SelectTrigger className="w-44 h-9 text-sm">
-                    <ArrowUpDown className="size-3.5 mr-1.5" />
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -233,7 +230,7 @@ export default function ProductListingPage() {
               <EmptyState onClear={() => { setFilters(DEFAULT_FILTERS); updateParams({ page: "1", category: null }) }} />
             ) : (
               <div className={cn("grid gap-4", gridCols === "4" ? "grid-cols-2 sm:grid-cols-3 lg:grid-cols-4" : "grid-cols-2 sm:grid-cols-3")}>
-                {products.map((p) => <ProductCard key={p.id} product={p} onQuickView={setQuickViewProduct} />)}
+                {products.map((p) => <ProductCard key={p.id} product={p} />)}
               </div>
             )}
 
@@ -243,8 +240,6 @@ export default function ProductListingPage() {
           </div>
         </div>
       </div>
-
-      <QuickView product={quickViewProduct} open={!!quickViewProduct} onClose={() => setQuickViewProduct(null)} />
     </div>
   )
 }

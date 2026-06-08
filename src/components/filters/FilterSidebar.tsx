@@ -62,7 +62,7 @@ function FiltersContent({ filters, onChange, categories }: FiltersProps) {
   return (
     <div>
       <div className="flex items-center justify-between py-3 mb-1">
-        <h2 className="text-base font-bold text-foreground">Filters</h2>
+        {/* <h2 className="text-base font-bold text-foreground">Filters</h2> */}
         {hasAnyFilter && (
           <button onClick={() => onChange(DEFAULT_FILTERS)} className="text-xs text-brand font-medium hover:underline">
             Clear All
@@ -174,7 +174,7 @@ export function MobileFilterDrawer({ filters, onChange, categories }: FiltersPro
         <SheetHeader>
           <SheetTitle>Filters</SheetTitle>
         </SheetHeader>
-        <div className="mt-4">
+        <div className="mt-4 px-4">
           <FiltersContent filters={filters} onChange={onChange} categories={categories} />
         </div>
       </SheetContent>

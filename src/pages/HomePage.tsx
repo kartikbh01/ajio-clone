@@ -4,13 +4,11 @@ import { ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { ProductCard, ProductCardSkeleton } from "@/components/product/ProductCard"
-import { QuickView } from "@/components/product/QuickView"
 import { fetchCategories, fetchProducts } from "@/api/dummyjson"
 import type { Product, Category } from "@/types"
 import { cn } from "@/lib/utils"
 
 export default function HomePage() {
-  const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null)
   const [categories, setCategories] = useState<Category[]>([])
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
@@ -19,11 +17,28 @@ export default function HomePage() {
     async function load() {
       const [cats, productsResult] = await Promise.all([
         fetchCategories(),
-        fetchProducts({ limit: 12 }),
+        fetchProducts({ limit: 150 }),
       ])
       setCategories(cats)
-      const sorted = productsResult ? [...productsResult.products].sort((a, b) => b.id - a.id) : []
-      setFeaturedProducts(sorted)
+      if (productsResult) {
+        const fashionCategories = [
+          "womens-dresses",
+          "tops",
+          "womens-shoes",
+          "mens-shoes",
+          "womens-bags",
+          "womens-jewellery",
+          "sunglasses",
+          "womens-watches",
+          "mens-watches",
+        ]
+        const fashionProducts = productsResult.products.filter((p) =>
+          fashionCategories.includes(p.category)
+        )
+        setFeaturedProducts(fashionProducts.slice(0, 12))
+      } else {
+        setFeaturedProducts([])
+      }
       setLoading(false)
     }
     load()
@@ -33,8 +48,7 @@ export default function HomePage() {
     <main>
       <HeroBanner />
       <ShopByCategory categories={categories} loading={loading} />
-      <FeaturedProducts products={featuredProducts} loading={loading} onQuickView={setQuickViewProduct} />
-      <QuickView product={quickViewProduct} open={!!quickViewProduct} onClose={() => setQuickViewProduct(null)} />
+      <FeaturedProducts products={featuredProducts} loading={loading} />
     </main>
   )
 }
@@ -56,7 +70,7 @@ function HeroBanner() {
             </h1>
             <p className="text-lg text-white/80 mb-6">Shop the latest products from our curated collection.</p>
             <Link to="/products">
-              <Button className="bg-white text-foreground hover:bg-white/90 font-bold px-8 py-3 text-base rounded-full shadow-lg hover:scale-105 transition-transform">
+              <Button className="bg-white text-brand hover:bg-white/90 font-bold px-8 py-3 text-base rounded-full shadow-lg hover:scale-105 transition-transform">
                 Shop Now <ArrowRight className="size-4 ml-2" />
               </Button>
             </Link>
@@ -98,7 +112,7 @@ function ShopByCategory({ categories, loading }: { categories: Category[]; loadi
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/10 opacity-90 group-hover:opacity-100 transition-opacity duration-300" />
                 <div className="absolute inset-0 flex flex-col justify-end p-4">
-                  <div className="backdrop-blur-md bg-white/10 dark:bg-black/20 border border-white/20 rounded-xl px-3 py-2.5 text-center transition-all duration-300 group-hover:bg-white/20 group-hover:border-white/30">
+                  <div className="backdrop-blur-md bg-white/5 dark:bg-black/5 border border-white/20 rounded-xl px-3 py-2.5 text-center transition-all duration-300 group-hover:bg-white/20 group-hover:border-white/30">
                     <span className="text-xs sm:text-sm font-bold text-white tracking-wide uppercase">
                       {cat.name}
                     </span>
@@ -114,14 +128,12 @@ function ShopByCategory({ categories, loading }: { categories: Category[]; loadi
 function FeaturedProducts({
   products,
   loading,
-  onQuickView,
 }: {
   products: Product[]
   loading: boolean
-  onQuickView: (p: Product) => void
 }) {
   return (
-    <section className={cn("max-w-[1440px] mx-auto px-4 lg:px-6 py-10", "bg-secondary/30")}>
+    <section className={cn("max-w-[1440px] mx-auto mb-10 px-4 lg:px-10 py-4", "bg-secondary/20 rounded-2xl")}>
       <div className="flex items-center justify-between mb-6">
         <div>
           <h2 className="text-2xl font-bold text-foreground">Featured Products</h2>
@@ -134,7 +146,7 @@ function FeaturedProducts({
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
         {loading
           ? Array.from({ length: 6 }).map((_, i) => <ProductCardSkeleton key={i} />)
-          : products.map((p) => <ProductCard key={p.id} product={p} onQuickView={onQuickView} />)}
+          : products.map((p) => <ProductCard key={p.id} product={p} />)}
       </div>
     </section>
   )

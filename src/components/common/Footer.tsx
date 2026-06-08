@@ -98,12 +98,6 @@ export function Footer() {
           </div>
         </div>
 
-        <Separator className="my-6 bg-neutral-800" />
-
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-neutral-400">
-          <p>© 2024 AJIO.clone — A frontend demo project. Not affiliated with AJIO or Reliance.</p>
-          <p>Powered by <a href="https://dummyjson.com/" className="hover:text-white transition-colors" target="_blank" rel="noreferrer">DummyJSON API</a></p>
-        </div>
       </div>
     </footer>
   )

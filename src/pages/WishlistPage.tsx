@@ -3,14 +3,12 @@ import { Link } from "react-router-dom"
 import { Heart, ChevronRight, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ProductCard, ProductCardSkeleton } from "@/components/product/ProductCard"
-import { QuickView } from "@/components/product/QuickView"
 import { useStore } from "@/store/StoreContext"
 import { fetchProductById } from "@/api/dummyjson"
 import type { Product } from "@/types"
 
 export default function WishlistPage() {
   const { wishlist } = useStore()
-  const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null)
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -60,12 +58,11 @@ export default function WishlistPage() {
           <>
             <h1 className="text-xl font-bold text-foreground mb-6">My Wishlist ({products.length})</h1>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-              {products.map((p) => <ProductCard key={p.id} product={p} onQuickView={setQuickViewProduct} />)}
+              {products.map((p) => <ProductCard key={p.id} product={p} />)}
             </div>
           </>
         )}
       </div>
-      <QuickView product={quickViewProduct} open={!!quickViewProduct} onClose={() => setQuickViewProduct(null)} />
     </div>
   )
 }
