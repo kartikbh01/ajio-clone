@@ -102,9 +102,11 @@ export default function CartPage() {
                 <span>Total Amount</span>
                 <span>{formatPrice(finalTotal)}</span>
               </div>
-              <Button className="w-full h-12 bg-brand text-brand-foreground hover:bg-brand/90 font-bold text-base rounded-xl">
-                Proceed to Checkout <ArrowRight className="size-4 ml-2" />
-              </Button>
+              <Link to="/checkout" className="w-full block">
+                <Button className="w-full h-12 bg-brand text-brand-foreground hover:bg-brand/90 font-bold text-base rounded-xl">
+                  Proceed to Checkout <ArrowRight className="size-4 ml-2" />
+                </Button>
+              </Link>
               <p className="text-xs text-muted-foreground text-center">Free delivery on orders above $50</p>
             </div>
           </div>

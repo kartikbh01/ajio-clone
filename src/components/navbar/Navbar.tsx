@@ -153,6 +153,7 @@ export function Navbar() {
             >
               All Products
             </Link>
+            
 
             {categories.slice(0, 6).map((cat) => (
               <div
@@ -276,6 +277,12 @@ export function Navbar() {
           </div>
 
           <div className="flex items-center gap-1">
+            <Link
+              to="/orders"
+              className="px-3 py-2 text-sm font-medium rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+            >
+              My Orders
+            </Link>
             <Button
               variant="ghost"
               size="icon"
@@ -336,6 +343,13 @@ export function Navbar() {
                 className="block px-3 py-3 text-sm font-medium rounded-lg hover:bg-accent transition-colors"
               >
                 All Products
+              </Link>
+              <Link
+                to="/orders"
+                onClick={() => setMobileOpen(false)}
+                className="block px-3 py-3 text-sm font-medium rounded-lg hover:bg-accent transition-colors"
+              >
+                My Orders
               </Link>
               {categories.map((cat) => (
                 <Link

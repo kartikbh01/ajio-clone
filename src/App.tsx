@@ -6,6 +6,9 @@ import ProductListingPage from "./pages/ProductListingPage"
 import ProductDetailPage from "./pages/ProductDetailPage"
 import CartPage from "./pages/CartPage"
 import WishlistPage from "./pages/WishlistPage"
+import CheckoutPage from "./pages/CheckoutPage"
+import OrderSuccessPage from "./pages/OrderSuccessPage"
+import OrdersPage from "./pages/OrdersPage"
 import { Navbar } from "./components/navbar/Navbar"
 import { Footer } from "./components/common/Footer"
 import { ScrollToTop } from "./components/common/ScrollToTop"
@@ -32,6 +35,9 @@ function App() {
           <Route path="/product/:id" element={<Layout><ProductDetailPage /></Layout>} />
           <Route path="/cart" element={<Layout><CartPage /></Layout>} />
           <Route path="/wishlist" element={<Layout><WishlistPage /></Layout>} />
+          <Route path="/checkout" element={<Layout><CheckoutPage /></Layout>} />
+          <Route path="/order-success/:orderId" element={<Layout><OrderSuccessPage /></Layout>} />
+          <Route path="/orders" element={<Layout><OrdersPage /></Layout>} />
         </Routes>
       </BrowserRouter>
       <Toaster position="bottom-right" richColors />

@@ -1,11 +1,13 @@
 import { create } from "zustand"
 import { persist, createJSONStorage } from "zustand/middleware"
-import type { CartItem, Product } from "../types"
+import type { CartItem, Product, Address, Order } from "../types"
 
 interface StoreState {
   cart: CartItem[]
   wishlist: number[]
   recentSearches: string[]
+  orders: Order[]
+  savedAddresses: Address[]
   addToCart: (product: Product) => void
   removeFromCart: (productId: number) => void
   updateCartQty: (productId: number, qty: number) => void
@@ -13,6 +15,11 @@ interface StoreState {
   isWishlisted: (productId: number) => boolean
   addRecentSearch: (q: string) => void
   clearRecentSearches: () => void
+  addOrder: (order: Order) => void
+  cancelOrder: (orderId: string) => void
+  clearCart: () => void
+  addAddress: (address: Address) => void
+  removeAddress: (id: string) => void
   cartCount: number
   cartTotal: number
 }
@@ -24,12 +31,39 @@ function getTotals(cart: CartItem[]) {
   }
 }
 
+const dummyAddresses: Address[] = [
+  {
+    id: "addr-1",
+    name: "John",
+    phone: "9876543210",
+    streetAddress: "A-12, Sector 62",
+    city: "Noida",
+    state: "Uttar Pradesh",
+    pinCode: "201301",
+    type: "Home",
+    isDefault: true,
+  },
+  {
+    id: "addr-2",
+    name: "John doe",
+    phone: "9876543210",
+    streetAddress: "Logix Cyber Park, Tower C",
+    city: "Noida",
+    state: "Uttar Pradesh",
+    pinCode: "201301",
+    type: "Work",
+    isDefault: false,
+  }
+]
+
 export const useStore = create<StoreState>()(
   persist(
     (set, get) => ({
       cart: [],
       wishlist: [],
       recentSearches: [],
+      orders: [],
+      savedAddresses: dummyAddresses,
       cartCount: 0,
       cartTotal: 0,
 
@@ -87,6 +121,45 @@ export const useStore = create<StoreState>()(
       },
 
       clearRecentSearches: () => set({ recentSearches: [] }),
+
+      addOrder: (order) => {
+        set((state) => ({
+          orders: [order, ...state.orders],
+        }))
+      },
+
+      cancelOrder: (orderId) => {
+        set((state) => ({
+          orders: state.orders.map((o) =>
+            o.id === orderId ? { ...o, status: "Cancelled" } : o
+          ),
+        }))
+      },
+
+      clearCart: () => {
+        set({
+          cart: [],
+          cartCount: 0,
+          cartTotal: 0,
+        })
+      },
+
+      addAddress: (address) => {
+        set((state) => {
+          const updatedAddresses = address.isDefault
+            ? state.savedAddresses.map((a) => ({ ...a, isDefault: false }))
+            : state.savedAddresses
+          return {
+            savedAddresses: [...updatedAddresses, address],
+          }
+        })
+      },
+
+      removeAddress: (id) => {
+        set((state) => ({
+          savedAddresses: state.savedAddresses.filter((a) => a.id !== id),
+        }))
+      },
     }),
     {
       name: "ajio_store",
