@@ -67,7 +67,7 @@ export default function ProductListingPage() {
 
   const [filters, setFilters] = useState<ActiveFilters>(() => ({
     ...DEFAULT_FILTERS,
-    categories: categoryParam ? [categoryParam] : [],
+    categories: categoryParam ? categoryParam.split(",") : [],
   }))
 
   const hasClientFilters =
@@ -80,12 +80,17 @@ export default function ProductListingPage() {
   }, [])
 
   useEffect(() => {
-    if (categoryParam) {
-      setFilters((prev) => ({
+    const categoriesFromParam = categoryParam ? categoryParam.split(",") : []
+    setFilters((prev) => {
+      const isSame =
+        prev.categories.length === categoriesFromParam.length &&
+        prev.categories.every((c) => categoriesFromParam.includes(c))
+      if (isSame) return prev
+      return {
         ...prev,
-        categories: prev.categories.includes(categoryParam) ? prev.categories : [categoryParam],
-      }))
-    }
+        categories: categoriesFromParam,
+      }
+    })
   }, [categoryParam])
 
   useEffect(() => {
@@ -98,9 +103,7 @@ export default function ProductListingPage() {
       const apiCategory =
         filters.categories.length === 1 && !hasClientFilters
           ? filters.categories[0]
-          : categoryParam && filters.categories.length <= 1
-            ? categoryParam
-            : undefined
+          : undefined
 
       const result = await fetchProducts({
         limit: hasClientFilters ? 194 : PAGE_SIZE,
@@ -150,16 +153,22 @@ export default function ProductListingPage() {
 
   function handleFilterChange(newFilters: ActiveFilters) {
     setFilters(newFilters)
-    const categoryUpdate = newFilters.categories.length === 1 ? newFilters.categories[0] : null
+    const categoryUpdate = newFilters.categories.length > 0 ? newFilters.categories.join(",") : null
     updateParams({ page: "1", category: categoryUpdate })
   }
 
-  const activeCategory = categories.find((c) => c.slug === categoryParam)
-  const breadcrumbLabel = searchTerm
-    ? `Search: "${searchTerm}"`
-    : activeCategory
-      ? activeCategory.name
-      : "All Products"
+  const parsedCategories = categoryParam ? categoryParam.split(",") : []
+  const activeCategories = categories.filter((c) => parsedCategories.includes(c.slug))
+  let breadcrumbLabel = "All Products"
+  if (searchTerm) {
+    breadcrumbLabel = `Search: "${searchTerm}"`
+  } else if (activeCategories.length > 0) {
+    if (activeCategories.length <= 3) {
+      breadcrumbLabel = activeCategories.map((c) => c.name).join(", ")
+    } else {
+      breadcrumbLabel = `${activeCategories.slice(0, 3).map((c) => c.name).join(", ")} +${activeCategories.length - 3} more`
+    }
+  }
 
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE))
   const page = Math.min(Math.max(1, pageParam), totalPages)
