@@ -58,7 +58,7 @@ export default function ProductListingPage() {
   const [products, setProducts] = useState<Product[]>([])
   const [total, setTotal] = useState(0)
   const [categories, setCategories] = useState<Category[]>([])
-  const [gridCols, setGridCols] = useState<"3" | "4">("4")
+  const [viewMode, setViewMode] = useState<"grid-4" | "list">("grid-4")
 
   const searchTerm = searchParams.get("search") ?? ""
   const categoryParam = searchParams.get("category") ?? ""
@@ -204,10 +204,10 @@ export default function ProductListingPage() {
                 </Select>
 
                 <div className="hidden sm:flex items-center border border-border rounded-md overflow-hidden">
-                  <button onClick={() => setGridCols("4")} className={cn("px-2.5 py-1.5 transition-colors", gridCols === "4" ? "bg-brand text-brand-foreground" : "hover:bg-accent")}>
+                  <button onClick={() => setViewMode("grid-4")} className={cn("px-2.5 py-1.5 transition-colors", viewMode === "grid-4" ? "bg-brand text-brand-foreground" : "hover:bg-accent")}>
                     <LayoutGrid className="size-4" />
                   </button>
-                  <button onClick={() => setGridCols("3")} className={cn("px-2.5 py-1.5 transition-colors", gridCols === "3" ? "bg-brand text-brand-foreground" : "hover:bg-accent")}>
+                  <button onClick={() => setViewMode("list")} className={cn("px-2.5 py-1.5 transition-colors", viewMode === "list" ? "bg-brand text-brand-foreground" : "hover:bg-accent")}>
                     <List className="size-4" />
                   </button>
                 </div>
@@ -217,8 +217,16 @@ export default function ProductListingPage() {
             <FilterChips filters={filters} onChange={handleFilterChange} categories={categories} />
 
             {loading ? (
-              <div className={cn("grid gap-4", gridCols === "4" ? "grid-cols-2 sm:grid-cols-3 lg:grid-cols-4" : "grid-cols-2 sm:grid-cols-3")}>
-                {Array.from({ length: PAGE_SIZE }).map((_, i) => <ProductCardSkeleton key={i} />)}
+              <div className={cn(
+                viewMode === "list" 
+                  ? "flex flex-col gap-4" 
+                  : viewMode === "grid-4"
+                    ? "grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4"
+                    : "grid gap-4 grid-cols-2 sm:grid-cols-3"
+              )}>
+                {Array.from({ length: PAGE_SIZE }).map((_, i) => (
+                  <ProductCardSkeleton key={i} view={viewMode === "list" ? "list" : "grid"} />
+                ))}
               </div>
             ) : error ? (
               <div className="flex flex-col items-center justify-center py-24 text-center">
@@ -229,8 +237,16 @@ export default function ProductListingPage() {
             ) : products.length === 0 ? (
               <EmptyState onClear={() => { setFilters(DEFAULT_FILTERS); updateParams({ page: "1", category: null }) }} />
             ) : (
-              <div className={cn("grid gap-4", gridCols === "4" ? "grid-cols-2 sm:grid-cols-3 lg:grid-cols-4" : "grid-cols-2 sm:grid-cols-3")}>
-                {products.map((p) => <ProductCard key={p.id} product={p} />)}
+              <div className={cn(
+                viewMode === "list" 
+                  ? "flex flex-col gap-4" 
+                  : viewMode === "grid-4"
+                    ? "grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4"
+                    : "grid gap-4 grid-cols-2 sm:grid-cols-3"
+              )}>
+                {products.map((p) => (
+                  <ProductCard key={p.id} product={p} view={viewMode === "list" ? "list" : "grid"} />
+                ))}
               </div>
             )}
 
