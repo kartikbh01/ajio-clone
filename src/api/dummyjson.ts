@@ -14,7 +14,7 @@ export interface DummyProductRaw {
   brand: string
   thumbnail: string
   images: string[]
-  reviews?: { rating: number; comment: string; reviewerName: string }[]
+  reviews?: { rating: number; comment: string; reviewerName: string, reviewerEmail:string }[]
 }
 
 export interface DummyProductsResponse {
@@ -88,6 +88,7 @@ export function mapDummyProduct(item: DummyProductRaw): Product {
     image: item.thumbnail || images[0],
     stock: item.stock,
     inStock: item.stock > 0,
+    reviews:item.reviews
   }
 }
 

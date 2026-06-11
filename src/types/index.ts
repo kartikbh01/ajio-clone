@@ -14,6 +14,12 @@ export interface Product {
   image: string
   stock: number
   inStock: boolean
+  reviews?: {
+    rating: number;
+    comment: string;
+    reviewerName: string;
+    reviewerEmail: string;
+  }[];
 }
 
 export interface Category {

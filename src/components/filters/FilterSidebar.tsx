@@ -10,7 +10,7 @@ import { Separator } from "@/components/ui/separator"
 import { formatPrice } from "@/lib/formatPrice"
 import type { Category } from "@/types"
 
-export const PRICE_MAX = 2000
+export const PRICE_MAX = 20000
 
 export interface ActiveFilters {
   categories: string[]

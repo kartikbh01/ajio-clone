@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils"
 import { formatPrice } from "@/lib/formatPrice"
 import { toast } from "sonner"
 import { Separator } from "@/components/ui/separator"
+import { ProductReviews } from "@/components/product/ProductReviews"
 
 export default function ProductDetailPage() {
   const { id } = useParams<{ id: string }>()
@@ -22,6 +23,8 @@ export default function ProductDetailPage() {
   const [loading, setLoading] = useState(true)
   const [activeImg, setActiveImg] = useState(0)
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([])
+
+  console.log(product?.reviews)
 
   useEffect(() => {
     let cancelled = false
@@ -230,6 +233,8 @@ export default function ProductDetailPage() {
             </Tabs>
           </div>
         </div>
+
+        <ProductReviews reviews={product.reviews}/>
 
         {relatedProducts.length > 0 && (
           <div className="mt-16">
