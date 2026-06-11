@@ -128,7 +128,8 @@ export function Navbar() {
   return (
     <>
       <header className="sticky top-0 z-50 bg-background border-b border-border shadow-sm">
-        <div className="max-w-[1440px] mx-auto px-4 lg:px-6 h-16 flex items-center gap-4">
+        <div className="max-w-[1440px] mx-auto px-3 lg:px-6 h-16 flex items-center gap-2">
+          {" "}
           <Button
             variant="ghost"
             size="icon"
@@ -141,11 +142,9 @@ export function Navbar() {
               <Menu className="size-5" />
             )}
           </Button>
-
           <Link to="/" className="flex items-center shrink-0">
             <span className="text-2xl font-bold tracking-tighter">AJIO</span>
           </Link>
-
           <nav className="hidden lg:flex items-center gap-1 ml-2">
             <Link
               to="/products"
@@ -153,7 +152,6 @@ export function Navbar() {
             >
               All Products
             </Link>
-            
 
             {categories.slice(0, 6).map((cat) => (
               <div
@@ -176,8 +174,8 @@ export function Navbar() {
               </div>
             ))}
           </nav>
-
-          <div ref={searchRef} className="flex-1 max-w-xl mx-auto relative">
+          <div ref={searchRef} className="flex-1 min-w-0 max-w-xl relative">
+            {" "}
             <div className="relative flex items-center">
               <Search className="absolute left-3 size-4 text-muted-foreground pointer-events-none" />
               <input
@@ -205,7 +203,6 @@ export function Navbar() {
                 </button>
               )}
             </div>
-
             {showSuggestions && (
               <div className="absolute top-full mt-1.5 w-full bg-popover border border-border rounded-xl shadow-lg z-50 overflow-hidden">
                 {suggestionsLoading ? (
@@ -275,11 +272,10 @@ export function Navbar() {
               </div>
             )}
           </div>
-
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1 shrink-0">
             <Link
               to="/orders"
-              className="px-3 py-2 text-sm font-medium rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+              className="hidden md:block px-3 py-2 text-sm font-medium rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
             >
               My Orders
             </Link>
@@ -287,7 +283,6 @@ export function Navbar() {
               variant="ghost"
               size="icon"
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="hidden sm:flex"
             >
               {theme === "dark" ? (
                 <Sun className="size-4" />

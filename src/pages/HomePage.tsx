@@ -89,7 +89,7 @@ function ShopByCategory({ categories, loading }: { categories: Category[]; loadi
           <h2 className="text-2xl font-bold text-foreground">Shop by Category</h2>
           <p className="text-sm text-muted-foreground mt-0.5">Explore our wide range of premium collections</p>
         </div>
-        <Link to="/products" className="text-sm text-brand font-medium hover:underline flex items-center gap-1">
+        <Link to="/products" className="text-sm font-medium hover:underline flex items-center gap-1">
           View All <ArrowRight className="size-3.5" />
         </Link>
       </div>
@@ -139,7 +139,7 @@ function FeaturedProducts({
           <h2 className="text-2xl font-bold text-foreground">Featured Products</h2>
           <p className="text-sm text-muted-foreground mt-0.5">Handpicked items from our store</p>
         </div>
-        <Link to="/products?sort=newest" className="text-sm text-brand font-medium hover:underline flex items-center gap-1">
+        <Link to="/products?sort=newest" className="text-sm font-medium hover:underline flex items-center gap-1">
           View All <ArrowRight className="size-3.5" />
         </Link>
       </div>
