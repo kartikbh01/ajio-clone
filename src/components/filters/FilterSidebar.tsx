@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { ChevronDown, X, SlidersHorizontal } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -47,11 +47,28 @@ function FilterSection({ title, defaultOpen = true, children }: { title: string;
 }
 
 function FiltersContent({ filters, onChange, categories }: FiltersProps) {
+  const [localPriceRange, setLocalPriceRange] = useState<[number, number]>(filters.priceRange)
+
+  useEffect(() => {
+    setLocalPriceRange(filters.priceRange)
+  }, [filters.priceRange])
+
+  useEffect(() => {
+    const isSame = localPriceRange[0] === filters.priceRange[0] && localPriceRange[1] === filters.priceRange[1]
+    if (isSame) return
+
+    const timer = setTimeout(() => {
+      onChange({ ...filters, priceRange: localPriceRange })
+    }, 800)
+
+    return () => clearTimeout(timer)
+  }, [localPriceRange, onChange, filters])
+
   function toggleCategory(slug: string) {
     const updated = filters.categories.includes(slug)
       ? filters.categories.filter((c) => c !== slug)
       : [...filters.categories, slug]
-    onChange({ ...filters, categories: updated })
+    onChange({ ...filters, categories: updated, priceRange: localPriceRange })
   }
 
   const hasAnyFilter =
@@ -92,13 +109,13 @@ function FiltersContent({ filters, onChange, categories }: FiltersProps) {
             min={0}
             max={PRICE_MAX}
             step={10}
-            value={filters.priceRange}
-            onValueChange={(v) => onChange({ ...filters, priceRange: v as [number, number] })}
+            value={localPriceRange}
+            onValueChange={(v) => setLocalPriceRange(v as [number, number])}
             className="[&_[data-slot=thumb]]:border-brand [&_[data-slot=range]]:bg-brand"
           />
           <div className="flex justify-between mt-2 text-xs text-muted-foreground">
-            <span>{formatPrice(filters.priceRange[0])}</span>
-            <span>{formatPrice(filters.priceRange[1])}</span>
+            <span>{formatPrice(localPriceRange[0])}</span>
+            <span>{formatPrice(localPriceRange[1])}</span>
           </div>
         </div>
       </FilterSection>
