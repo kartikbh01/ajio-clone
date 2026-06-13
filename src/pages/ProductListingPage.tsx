@@ -62,13 +62,22 @@ export default function ProductListingPage() {
 
   const searchTerm = searchParams.get("search") ?? ""
   const categoryParam = searchParams.get("category") ?? ""
+  const minPriceParam = searchParams.get("minPrice")
+  const maxPriceParam = searchParams.get("maxPrice")
   const sortParam = searchParams.get("sort") ?? "recommended"
   const pageParam = parseInt(searchParams.get("page") ?? "1", 10)
 
-  const [filters, setFilters] = useState<ActiveFilters>(() => ({
-    ...DEFAULT_FILTERS,
-    categories: categoryParam ? categoryParam.split(",") : [],
-  }))
+  const [filters, setFilters] = useState<ActiveFilters>(() => {
+    const minPrice = minPriceParam ? parseInt(minPriceParam, 10) : 0
+    const maxPrice = maxPriceParam ? parseInt(maxPriceParam, 10) : PRICE_MAX
+    return {
+      categories: categoryParam ? categoryParam.split(",") : [],
+      priceRange: [
+        isNaN(minPrice) ? 0 : minPrice,
+        isNaN(maxPrice) ? PRICE_MAX : maxPrice,
+      ],
+    }
+  })
 
   const hasClientFilters =
     filters.categories.length > 1 ||
@@ -81,17 +90,25 @@ export default function ProductListingPage() {
 
   useEffect(() => {
     const categoriesFromParam = categoryParam ? categoryParam.split(",") : []
+    const minPrice = minPriceParam ? parseInt(minPriceParam, 10) : 0
+    const maxPrice = maxPriceParam ? parseInt(maxPriceParam, 10) : PRICE_MAX
+    const parsedMin = isNaN(minPrice) ? 0 : minPrice
+    const parsedMax = isNaN(maxPrice) ? PRICE_MAX : maxPrice
+
     setFilters((prev) => {
-      const isSame =
+      const isSameCategories =
         prev.categories.length === categoriesFromParam.length &&
         prev.categories.every((c) => categoriesFromParam.includes(c))
-      if (isSame) return prev
+      const isSamePrice =
+        prev.priceRange[0] === parsedMin && prev.priceRange[1] === parsedMax
+
+      if (isSameCategories && isSamePrice) return prev
       return {
-        ...prev,
         categories: categoriesFromParam,
+        priceRange: [parsedMin, parsedMax],
       }
     })
-  }, [categoryParam])
+  }, [categoryParam, minPriceParam, maxPriceParam])
 
   useEffect(() => {
     let cancelled = false
@@ -154,7 +171,14 @@ export default function ProductListingPage() {
   function handleFilterChange(newFilters: ActiveFilters) {
     setFilters(newFilters)
     const categoryUpdate = newFilters.categories.length > 0 ? newFilters.categories.join(",") : null
-    updateParams({ page: "1", category: categoryUpdate })
+    const minPriceUpdate = newFilters.priceRange[0] > 0 ? String(newFilters.priceRange[0]) : null
+    const maxPriceUpdate = newFilters.priceRange[1] < PRICE_MAX ? String(newFilters.priceRange[1]) : null
+    updateParams({
+      page: "1",
+      category: categoryUpdate,
+      minPrice: minPriceUpdate,
+      maxPrice: maxPriceUpdate,
+    })
   }
 
   const parsedCategories = categoryParam ? categoryParam.split(",") : []
@@ -244,7 +268,7 @@ export default function ProductListingPage() {
                 <Button onClick={() => window.location.reload()} className="bg-brand text-brand-foreground">Retry</Button>
               </div>
             ) : products.length === 0 ? (
-              <EmptyState onClear={() => { setFilters(DEFAULT_FILTERS); updateParams({ page: "1", category: null }) }} />
+              <EmptyState onClear={() => { setFilters(DEFAULT_FILTERS); updateParams({ page: "1", category: null, minPrice: null, maxPrice: null }) }} />
             ) : (
               <div className={cn(
                 viewMode === "list" 
